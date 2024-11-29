@@ -22,7 +22,7 @@ export class UserEntity extends BaseEntity {
   status: UserStatusEnum;
 
   @OneToMany(() => OrderEntity, (order) => order.user, { cascade: true })
-  orders: OrderEntity[] = [];
+  orders: OrderEntity[];
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {
