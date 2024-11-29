@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrderEntity } from '../entities/order.entity';
 import { UserEntity } from '../entities/user.entity';
-import { ListOrdersQueryDto } from '../../orders/dto/list-orders-query.dto';
+import { ListOrdersQueryDto } from '../../order/dto/list-orders-query.dto';
 import { getSkipPaginationValue } from '../../../shared/utils';
 
 @Injectable()

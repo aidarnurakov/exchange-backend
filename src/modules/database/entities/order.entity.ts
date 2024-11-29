@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
-import { Side } from '../../orders/enum/side.enum';
-import { Type } from '../../orders/enum/type.enum';
+import { Side } from '../../order/enum/side.enum';
+import { Type } from '../../order/enum/type.enum';
 import { UserEntity } from './user.entity';
 import { BaseEntity } from '../../../shared/base/base.entity';
 
