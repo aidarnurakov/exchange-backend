@@ -1,9 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Side } from '../../orders/enums/side.enum';
+import { Type } from '../../orders/enums/type.enum';
 
-@Entity()
+@Entity('orders')
 export class Order {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   tokenA: string;
@@ -11,30 +13,24 @@ export class Order {
   @Column()
   tokenB: string;
 
-  @Column()
-  user: string;
+  @Column({ type: 'enum', enum: Side })
+  side: Side;
 
-  @Column({ type: 'decimal', precision: 18, scale: 8 })
+  @Column({ type: 'enum', enum: Type })
+  type: Type;
+
+  @Column({ type: 'decimal' })
   amountA: number;
 
-  @Column({ type: 'decimal', precision: 18, scale: 8, nullable: true })
+  @Column({ type: 'decimal', nullable: true })
   amountB: number;
 
-  @Column()
-  type: 'limit' | 'market';
-
-  @Column()
-  side: 'buy' | 'sell';
-
-  @Column({ type: 'decimal', precision: 18, scale: 8 })
+  @Column({ type: 'decimal' })
   filled: number;
 
   @Column({ default: true })
   active: boolean;
 
   @Column()
-  createdAt: Date;
-
-  @Column({ nullable: true })
-  matchedAt: Date;
+  user: string;
 }
