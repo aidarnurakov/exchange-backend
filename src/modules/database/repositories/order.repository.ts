@@ -1,32 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OrderEntity } from '../entities/order.entity';
 import { UserEntity } from '../entities/user.entity';
+import { ListOrdersQueryDto } from '../../orders/dto/list-orders-query.dto';
 import { getSkipPaginationValue } from '../../../shared/utils';
 
 @Injectable()
 export class OrderRepository {
   constructor(
     @InjectRepository(OrderEntity)
-    private readonly taskRepository: Repository<OrderEntity>,
+    private readonly orderRepository: Repository<OrderEntity>,
   ) {}
 
-  async create(taskData): Promise<OrderEntity | OrderEntity[]> {
-    const task = this.taskRepository.create(taskData);
+  async create(
+    orderData: Partial<OrderEntity> | Partial<OrderEntity[]>,
+  ): Promise<OrderEntity | OrderEntity[]> {
+    if (Array.isArray(orderData)) {
+      const orders = this.orderRepository.create(orderData);
+      return this.orderRepository.save(orders);
+    }
 
-    return this.taskRepository.save(task);
+    const order = this.orderRepository.create(orderData);
+    return this.orderRepository.save(order);
   }
 
   async findById(id: number): Promise<OrderEntity | null> {
-    return this.taskRepository.findOne({
-      where: {
-        id,
-      },
+    return this.orderRepository.findOne({
+      where: { id },
     });
   }
 
-  async findOne(query) {
-    return this.taskRepository.findOne({
+  async findOne(query: Partial<OrderEntity>): Promise<OrderEntity | null> {
+    return this.orderRepository.findOne({
       where: query,
     });
   }
@@ -34,23 +40,24 @@ export class OrderRepository {
   async list(
     { page = 1, limit = 20, ...query }: ListOrdersQueryDto,
     user: UserEntity,
-  ) {
-    const queryRunner = this.taskRepository
-      .createQueryBuilder('task')
-      .leftJoinAndSelect('task.user', 'user')
-      .where('task.isDeleted = false')
+  ): Promise<[OrderEntity[], number]> {
+    const queryRunner = this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.user', 'user')
+      .where('order.isDeleted = false')
       .andWhere('user.id = :userId', { userId: user.id });
 
-    if (query.title) {
-      queryRunner.andWhere('LOWER(task.title) like :name', {
-        name: `%${query.title}%`,
-      });
+    // Применяем фильтры
+    if (query.tokenB) {
+      queryRunner.andWhere('order.tokenB = :tokenB', { tokenB: query.tokenB });
     }
 
-    if (query.completed) {
-      queryRunner.andWhere('task.isCompleted = :isCompleted', {
-        isCompleted: query.completed,
-      });
+    if (query.user) {
+      queryRunner.andWhere('order.user = :user', { user: query.user });
+    }
+
+    if (query.active !== undefined) {
+      queryRunner.andWhere('order.active = :active', { active: query.active });
     }
 
     return queryRunner
@@ -59,16 +66,14 @@ export class OrderRepository {
       .getManyAndCount();
   }
 
-  async updateById(id: number, updateData) {
-    return this.taskRepository.update({ id }, updateData);
+  async updateById(
+    id: number,
+    updateData: Partial<OrderEntity>,
+  ): Promise<void> {
+    await this.orderRepository.update({ id }, updateData);
   }
 
-  async softRemove(id: number) {
-    return this.taskRepository.update(
-      { id },
-      {
-        isDeleted: true,
-      },
-    );
+  async softRemove(id: number): Promise<void> {
+    await this.orderRepository.update({ id }, { isDeleted: true });
   }
 }

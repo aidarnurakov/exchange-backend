@@ -1,14 +1,15 @@
-import { Entity, Column, BaseEntity, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { Side } from '../../orders/enum/side.enum';
 import { Type } from '../../orders/enum/type.enum';
 import { UserEntity } from './user.entity';
+import { BaseEntity } from '../../../shared/base/base.entity';
 
 @Entity('orders')
 export class OrderEntity extends BaseEntity {
-  @Column()
+  @Column({ type: 'varchar' })
   tokenA: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   tokenB: string;
 
   @Column({ type: 'enum', enum: Side })
@@ -17,13 +18,13 @@ export class OrderEntity extends BaseEntity {
   @Column({ type: 'enum', enum: Type })
   type: Type;
 
-  @Column({ type: 'decimal' })
+  @Column({ name: 'amount_a', type: 'decimal', precision: 18, scale: 8 })
   amountA: number;
 
-  @Column({ type: 'decimal', nullable: true })
+  @Column({ name: 'amount_b', type: 'decimal', precision: 18, scale: 8 })
   amountB: number;
 
-  @Column({ type: 'decimal' })
+  @Column({ type: 'decimal', precision: 18, scale: 8, default: 0 })
   filled: number;
 
   @Column({ default: true })
