@@ -1,8 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { ListOrdersQueryDto } from './dto/list-orders-query.dto';
 import { ListResponseDto } from '../../shared/dto/list-response.dto';
 import { OrderEntity } from '../database/entities/order.entity';
+import { GetOrdersQueryDto } from './dto/get-orders-query.dto';
 
 @Controller('order')
 export class OrderController {
@@ -10,7 +10,7 @@ export class OrderController {
 
   @Get()
   async getOrders(
-    @Query() query: ListOrdersQueryDto,
+    @Query() query: GetOrdersQueryDto,
   ): Promise<ListResponseDto<OrderEntity>> {
     const orders = await this.orderService.getOrders(query);
     return orders;
