@@ -21,6 +21,9 @@ export class UserEntity extends BaseEntity {
   })
   status: UserStatusEnum;
 
+  @Column({ type: 'varchar', length: 42 })
+  address: string;
+
   @OneToMany(() => OrderEntity, (order) => order.user, { cascade: true })
   orders: OrderEntity[];
 

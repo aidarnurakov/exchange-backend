@@ -1,22 +1,18 @@
 import { Transform } from 'class-transformer';
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsString, IsNumber, IsOptional } from 'class-validator';
 
-export class ListOrdersQueryDto {
-  @IsOptional()
+export class GetMatchingOrdersDto {
   @IsString()
   tokenA?: string;
 
-  @IsOptional()
   @IsString()
   tokenB?: string;
 
-  @IsOptional()
-  @IsString()
-  user?: string;
+  @IsNumber()
+  amountA?: number;
 
-  @IsOptional()
-  @IsBoolean()
-  active?: boolean;
+  @IsNumber()
+  amountB?: number;
 
   @IsOptional()
   @IsNumber()

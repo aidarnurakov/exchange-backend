@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class ListOrdersQueryDto {
+export class GetOrdersQueryDto {
   @IsOptional()
   @IsString()
   tokenA?: string;
